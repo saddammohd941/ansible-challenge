@@ -1,0 +1,26 @@
+---
+- name: Configure Frontend Servers
+  hosts: frontend
+  become: yes
+  tasks:
+    - name: Install Nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+    - name: Configure Nginx proxy
+      ansible.builtin.copy:
+        dest: /etc/nginx/conf.d/proxy.conf
+        content: |
+          server {
+              listen 80;
+              location / {
+                  proxy_pass http://{{ hostvars['u21.local'].ansible_host }}:19999;
+              }
+          }
+
+    - name: Ensure Nginx is running
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes

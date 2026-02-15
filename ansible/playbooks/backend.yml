@@ -1,0 +1,24 @@
+---
+- name: Configure Backend Servers
+  hosts: backend
+  become: yes
+  tasks:
+    - name: Install dependencies
+      ansible.builtin.package:
+        name: curl
+        state: present
+
+    - name: Install Netdata
+      ansible.builtin.shell: |
+        curl -L https://my-netdata.io/kickstart.sh -o /tmp/netdata.sh
+        bash /tmp/netdata.sh --dont-wait --non-interactive
+      args:
+        executable: /bin/bash
+      register: netdata_install
+      changed_when: "'already installed' not in netdata_install.stdout"  
+
+    - name: Ensure Netdata is running
+      ansible.builtin.service:
+        name: netdata
+        state: started
+        enabled: yes

@@ -1,0 +1,31 @@
+name: Deploy VMs and Configure
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform -chdir=terraform init
+
+      - name: Terraform Apply
+        run: terraform -chdir=terraform apply -auto-approve
+
+      - name: Set up Ansible
+        run: sudo apt-get install -y ansible
+
+      - name: Run Ansible Playbooks
+        run: |
+          ansible-playbook -i ansible/inventories/dynamic_inventory.sh ansible/playbooks/common.yml
+          ansible-playbook -i ansible/inventories/dynamic_inventory.sh ansible/playbooks/backend.yml
+          ansible-playbook -i ansible/inventories/dynamic_inventory.sh ansible/playbooks/frontend.yml
