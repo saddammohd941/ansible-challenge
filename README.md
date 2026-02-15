@@ -12,7 +12,7 @@ The pipeline:
 
 This repository is triggered by the following pipeline:
 
-👉 [https://github.com/saddammohd941/ansible-challange-pipeline.git](https://github.com/saddammohd941/ansible-challange-pipeline.git)
+👉 [https://github.com/saddammohd941/ansible-challenge-pipeline.git](https://github.com/saddammohd941/ansible-challenge-pipeline.git)
 
 ## Project Objective
 
