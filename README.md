@@ -49,6 +49,87 @@ After provisioning:
 * Install **Netdata**
 * Run Netdata on **port 19999**
 
+## Prerequisites
+
+Before running this project, ensure the following tools and configurations are in place.
+
+### **1️⃣ Jenkins Server**
+
+A Jenkins server is required to execute the CI/CD pipeline.
+
+The Jenkins environment must have:
+
+* Git
+* Terraform
+* Ansible
+
+Installed and accessible in the system path.
+
+### **2️⃣ Terraform**
+
+Verify installation:
+
+```bash
+terraform --version
+```
+
+### **3️⃣ Ansible**
+
+Verify installation:
+
+```bash
+ansible --version
+```
+
+### **4️⃣ AWS Credentials**
+
+Terraform requires AWS permissions to provision infrastructure.
+
+Configure credentials using one of the following:
+
+* Jenkins Credentials Store (recommended)
+* Environment Variables
+* IAM Role (best practice)
+
+Required permissions:
+
+- ✔ EC2 instance creation
+- ✔ Security group management
+
+### **5️⃣ SSH Key Pair**
+
+Ansible connects to instances via SSH.
+
+Ensure:
+
+* A valid AWS key pair exists
+* Jenkins has access to the private key (`.pem`)
+* Correct file permissions are applied
+
+Example:
+
+```bash
+chmod 400 ansible-challenge-key.pem
+```
+
+### **6️⃣ Network Access**
+
+Security group rules must allow:
+
+| Port  | Purpose |
+| ----- | ------- |
+| 22    | SSH     |
+| 80    | Nginx   |
+| 19999 | Netdata |
+
+### **7️⃣ Supported Environment**
+
+Tested with:
+
+* AWS EC2
+* Amazon Linux
+* Ubuntu 21.04
+
 ## Repository Structure
 
 ```bash
@@ -87,7 +168,7 @@ Terraform:
 The inventory script:
 
 * Reads Terraform outputs
-* Assigns hosts to groups:
+* Assigns hosts to groups
 
 | Host      | Group    |
 | --------- | -------- |
@@ -130,13 +211,6 @@ Ensure the security group allows:
 * **80** → Nginx
 * **19999** → Netdata
 
-## Key Notes
-
-✔ Dynamic inventory removes the need for static IP management
-✔ Terraform handles infrastructure lifecycle
-✔ Ansible handles configuration lifecycle
-✔ Pipeline enables full automation
-
 ## Architecture / Workflow
 
 ```mermaid
@@ -163,3 +237,10 @@ flowchart TD
     M --> N[User Access via Port 80]
     N --> O[Traffic Forwarded to Netdata]
 ```
+
+## Key Notes
+
+- ✔ Dynamic inventory removes the need for static IP management
+- ✔ Terraform handles infrastructure lifecycle
+- ✔ Ansible handles configuration lifecycle
+- ✔ Pipeline enables full automation
